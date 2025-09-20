@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'CryptoGem AI',
-  description: 'AI-powered crypto analysis to find your next gem.',
+  title: 'Mug Punters Crypto Gems',
+  description: 'Uncover high-potential crypto gems to punt on - cannot lose - top 15 ranked options.',
 };
 
 export default function RootLayout({

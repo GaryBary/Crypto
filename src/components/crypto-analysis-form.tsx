@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useEffect } from 'react';
 
 const formSchema = z.object({
   riskAppetite: z.string({
@@ -37,9 +38,10 @@ type FormValues = z.infer<typeof formSchema>;
 type CryptoAnalysisFormProps = {
   onSubmit: (values: FormValues) => void;
   isLoading: boolean;
+  initialValues?: FormValues | null;
 };
 
-export function CryptoAnalysisForm({ onSubmit, isLoading }: CryptoAnalysisFormProps) {
+export function CryptoAnalysisForm({ onSubmit, isLoading, initialValues }: CryptoAnalysisFormProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,6 +49,13 @@ export function CryptoAnalysisForm({ onSubmit, isLoading }: CryptoAnalysisFormPr
       investmentDuration: 'medium-term',
     }
   });
+
+  useEffect(() => {
+    if (initialValues) {
+      form.reset(initialValues);
+    }
+  }, [initialValues, form]);
+
 
   return (
     <Card className="w-full max-w-2xl shadow-lg">
@@ -66,7 +75,7 @@ export function CryptoAnalysisForm({ onSubmit, isLoading }: CryptoAnalysisFormPr
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Risk Appetite</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                    <Select onValueChange={field.onChange} value={field.value} disabled={isLoading}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select your risk tolerance" />
@@ -88,13 +97,14 @@ export function CryptoAnalysisForm({ onSubmit, isLoading }: CryptoAnalysisFormPr
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Investment Duration</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                    <Select onValueChange={field.onChange} value={field.value} disabled={isLoading}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select your investment horizon" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
+                        <SelectItem value="exceptionally-short-term">Exceptionally short-term (&lt; 1 month)</SelectItem>
                         <SelectItem value="short-term">Short-term ( &lt; 1 year)</SelectItem>
                         <SelectItem value="medium-term">Medium-term (1-3 years)</SelectItem>
                         <SelectItem value="long-term">Long-term (3+ years)</SelectItem>

@@ -12,13 +12,28 @@ import { Separator } from './ui/separator';
 import type { RankedCryptoOption } from '@/lib/types';
 import { BarChart, BrainCircuit, FileText } from 'lucide-react';
 
+const DURATION_LABELS: Record<string, string> = {
+  'exceptionally-short-term': 'Exceptionally Short-Term',
+  'short-term': 'Short-Term',
+  'medium-term': 'Medium-Term',
+  'long-term': 'Long-Term',
+};
+
+const RISK_LABELS: Record<string, string> = {
+  low: 'Low-Risk',
+  medium: 'Medium-Risk',
+  high: 'High-Risk',
+};
+
+
 type CryptoDetailSheetProps = {
   crypto: RankedCryptoOption | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  analysisCriteria: { riskAppetite: string; investmentDuration: string } | null;
 };
 
-export function CryptoDetailSheet({ crypto, open, onOpenChange }: CryptoDetailSheetProps) {
+export function CryptoDetailSheet({ crypto, open, onOpenChange, analysisCriteria }: CryptoDetailSheetProps) {
   if (!crypto) return null;
 
   return (
@@ -30,7 +45,7 @@ export function CryptoDetailSheet({ crypto, open, onOpenChange }: CryptoDetailSh
               <span>{crypto.name}</span>
               <Badge variant="outline" className="text-base">{crypto.ticker}</Badge>
             </SheetTitle>
-            <SheetDescription>Ranked #{crypto.rank} by CryptoGem AI</SheetDescription>
+            <SheetDescription>Ranked #{crypto.rank} by Mug Punters Crypto Gems</SheetDescription>
           </SheetHeader>
           <Separator />
           <div className="flex-1 p-6 space-y-6">
@@ -50,7 +65,7 @@ export function CryptoDetailSheet({ crypto, open, onOpenChange }: CryptoDetailSh
               <p className="text-muted-foreground">{crypto.rationale}</p>
             </section>
 
-             <section className="space-y-2">
+             {analysisCriteria && <section className="space-y-2">
               <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground">
                 <BarChart className="h-5 w-5 text-primary" />
                 Analysis Context
@@ -58,14 +73,14 @@ export function CryptoDetailSheet({ crypto, open, onOpenChange }: CryptoDetailSh
               <div className="text-sm text-muted-foreground grid grid-cols-2 gap-2">
                   <p>
                     <span className="font-semibold text-foreground/80 block">Risk Profile:</span> 
-                    High-Risk tolerant
+                    {RISK_LABELS[analysisCriteria.riskAppetite] || 'N/A'}
                   </p>
                    <p>
                     <span className="font-semibold text-foreground/80 block">Investment Horizon:</span> 
-                    Long-Term
+                    {DURATION_LABELS[analysisCriteria.investmentDuration] || 'N/A'}
                   </p>
               </div>
-            </section>
+            </section>}
 
           </div>
         </div>
