@@ -11,6 +11,7 @@ import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import type { RankedCryptoOption } from '@/lib/types';
 import { BarChart, BrainCircuit, FileText } from 'lucide-react';
+import { CryptoPriceHistory } from './crypto-price-history';
 
 const DURATION_LABELS: Record<string, string> = {
   'exceptionally-short-term': 'Exceptionally Short-Term',
@@ -81,6 +82,8 @@ export function CryptoDetailSheet({ crypto, open, onOpenChange, analysisCriteria
                   </p>
               </div>
             </section>}
+
+            <CryptoPriceHistory cryptoId={crypto.name.toLowerCase()} />
 
           </div>
         </div>

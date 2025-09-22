@@ -33,6 +33,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverComponentsExternalPackages: ['@genkit-ai/googleai'],
+    transpilePackages: ['recharts'],
   },
 };
 
