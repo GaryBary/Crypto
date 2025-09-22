@@ -37,6 +37,8 @@ type CryptoDetailSheetProps = {
 export function CryptoDetailSheet({ crypto, open, onOpenChange, analysisCriteria }: CryptoDetailSheetProps) {
   if (!crypto) return null;
 
+  const hasRationale = crypto.rationale && crypto.rationale !== "Select an analysis to see the AI rationale.";
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-lg p-0">
@@ -46,7 +48,9 @@ export function CryptoDetailSheet({ crypto, open, onOpenChange, analysisCriteria
               <span>{crypto.name}</span>
               <Badge variant="outline" className="text-base">{crypto.ticker}</Badge>
             </SheetTitle>
-            <SheetDescription>Ranked #{crypto.rank} by Mug Punters Crypto Gems</SheetDescription>
+            {crypto.rank > 0 && 
+              <SheetDescription>Ranked #{crypto.rank} by Mug Punters Crypto Gems</SheetDescription>
+            }
           </SheetHeader>
           <Separator />
           <div className="flex-1 p-6 space-y-6">
@@ -55,16 +59,18 @@ export function CryptoDetailSheet({ crypto, open, onOpenChange, analysisCriteria
                 <FileText className="h-5 w-5 text-primary" />
                 Summary
               </h3>
-              <p className="text-muted-foreground">{crypto.summary}</p>
+              <p className="text-muted-foreground">{crypto.summary || crypto.description}</p>
             </section>
             
-            <section className="space-y-2">
-              <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground">
-                <BrainCircuit className="h-5 w-5 text-primary" />
-                AI Rationale
-              </h3>
-              <p className="text-muted-foreground">{crypto.rationale}</p>
-            </section>
+            {hasRationale && (
+              <section className="space-y-2">
+                <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                  <BrainCircuit className="h-5 w-5 text-primary" />
+                  AI Rationale
+                </h3>
+                <p className="text-muted-foreground">{crypto.rationale}</p>
+              </section>
+            )}
 
              {analysisCriteria && <section className="space-y-2">
               <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground">

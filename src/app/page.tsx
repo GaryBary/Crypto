@@ -1,17 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getRankedCrypto } from '@/app/actions';
-import type { RankedCryptoOption } from '@/lib/types';
+import type { RankedCryptoOption, CryptoData } from '@/lib/types';
 import { Logo } from '@/components/logo';
+import { CryptoSearch } from '@/components/crypto-search';
 import { CryptoAnalysisForm } from '@/components/crypto-analysis-form';
 import { RankingListSkeleton } from '@/components/ranking-list-skeleton';
 import { CryptoRankingList } from '@/components/crypto-ranking-list';
 import { CryptoDetailSheet } from '@/components/crypto-detail-sheet';
 import { SavedAnalysesDialog } from '@/components/saved-analyses-dialog';
 import { Button } from '@/components/ui/button';
-import { ListCollapse } from 'lucide-react';
+import { ListCollapse, SearchIcon } from 'lucide-react';
 
 export type SavedAnalysis = {
   id: string;
@@ -28,6 +29,7 @@ export default function Home() {
   const [rankedData, setRankedData] = useState<RankedCryptoOption[] | null>(null);
   const [selectedCrypto, setSelectedCrypto] = useState<RankedCryptoOption | null>(null);
   const [isSaved, setIsSaved] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSavedAnalysesOpen, setIsSavedAnalysesOpen] = useState(false);
   const [analysisCriteria, setAnalysisCriteria] = useState<{ riskAppetite: string; investmentDuration: string; } | null>(null);
   const { toast } = useToast();
@@ -88,6 +90,18 @@ export default function Home() {
     });
   }
 
+  const handleSelectFromSearch = (crypto: CryptoData) => {
+    // To display the detail sheet, we need to convert the CryptoData to a RankedCryptoOption.
+    // We'll create a placeholder for the rationale and rank.
+    const rankedCrypto: RankedCryptoOption = {
+      ...crypto,
+      rationale: "Select an analysis to see the AI rationale.",
+      rank: 0, // No rank available from search
+    };
+    setSelectedCrypto(rankedCrypto);
+    setIsSearchOpen(false);
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col items-center bg-background text-foreground">
       <main className="flex flex-1 flex-col items-center gap-8 px-4 py-12 md:px-6 md:py-16 w-full">
@@ -98,11 +112,19 @@ export default function Home() {
           </p>
         </header>
 
-        <div className="w-full max-w-2xl flex justify-end">
-          <Button variant="outline" onClick={() => setIsSavedAnalysesOpen(true)}>
-            <ListCollapse />
-            Saved Analyses
-          </Button>
+        <div className="w-full max-w-2xl flex justify-between items-center gap-4">
+          <div className="flex-grow">
+            {isSearchOpen && <CryptoSearch onSelectCrypto={handleSelectFromSearch} />}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => setIsSearchOpen(!isSearchOpen)}>
+              <SearchIcon size={18} />
+            </Button>
+            <Button variant="outline" onClick={() => setIsSavedAnalysesOpen(true)}>
+              <ListCollapse />
+              Saved Analyses
+            </Button>
+          </div>
         </div>
 
         <CryptoAnalysisForm 
